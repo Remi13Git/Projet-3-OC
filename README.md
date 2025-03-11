@@ -6,23 +6,23 @@ Ce projet est une application de gestion de locations immobilières, permettant 
 
 ## Fonctionnalités principales
 
-- **Page de Login** :  
+- **Page de Register - /register** :  
+  Permet à l'utilisateur de créer un compte. 
+  
+- **Page de Login - /login** :  
   Permet à l'utilisateur de se connecter à son compte. 
 
-- **Page de Register** :  
-  Permet à l'utilisateur de créer un compte. 
+- **Page d'informations /me** :  
+  Permet à un utilisateur authentifié de consulter ses propres informations personnelles, comme son email et d'autres détails du profil.
 
-- **Page d'Accueil (/rentals)** :  
+- **Page d'Accueil - /rentals** :  
   Affiche une liste de toutes les locations disponibles. 
 
-- **Page Rentals/Create** :  
+- **Page de création - /rentals/create** :  
   Permet à un utilisateur authentifié de créer une nouvelle location en fournissant des informations telles que le nom, la surface, le prix, la description, et l'image associée. 
 
-- **Page Rentals/Update** :  
+- **Page de modification - /rentals/update** :  
   Permet à un utilisateur authentifié de mettre à jour les informations d'une location existante. 
-
-- **Page /auth/me** :  
-  Permet à un utilisateur authentifié de consulter ses propres informations personnelles, comme son email et d'autres détails du profil.
 
 
 ## Prérequis
@@ -51,22 +51,21 @@ Dans le fichier `src/main/resources/application.properties`, vous devez configur
 
 Dans le terminal de votre IDE ou dans un terminal, exécutez la commande suivante pour télécharger et installer toutes les dépendances nécessaires à l'exécution du projet :
 
-    ```bash
-    cd Projet-3-OC
-    mvn clean install
-    ```
+```bash
+cd Projet-3-OC
+```
 
 ## Lancer l'application
 
 Une fois les dépendances installées, vous pouvez démarrer l'application avec la commande suivante :
 
-    ```bash
-    cd SpringSecurityAuth
-    mvn spring-boot:run
-    ```
+```bash
+cd SpringSecurityAuth
+mvn spring-boot:run
+```
 
 Cela va démarrer votre application Spring Boot, et le backend sera accessible à l'adresse suivante :
 
-    ```bash
-    http://localhost:3001
-    ```
+```bash
+http://localhost:3001
+```
