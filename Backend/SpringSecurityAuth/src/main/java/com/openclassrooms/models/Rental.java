@@ -3,7 +3,7 @@ package com.openclassrooms.models;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import com.fasterxml.jackson.annotation.JsonProperty;  // Assure-toi que cette importation est présente
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -35,21 +35,23 @@ public class Rental {
     @Column(nullable = true, length = 2000)
     private String description;
 
-    @JsonProperty("owner_id")  // Cette annotation permet de renvoyer 'ownerId' sous le nom 'owner_id' dans le JSON
+    @JsonProperty("owner_id")  // Permet de renvoyer 'ownerId' sous le nom 'owner_id' dans le JSON
     @Column(nullable = false)
     private Long ownerId;
 
+    @JsonProperty("created_at")  // Permet de renvoyer 'createdAt' sous le nom 'created_at' dans le JSON
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @JsonProperty("updated_at")  // Permet de renvoyer 'updatedAt' sous le nom 'updated_at' dans le JSON
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    // 🟢 Constructeur par défaut (nécessaire pour JPA)
+    // Constructeur par défaut (nécessaire pour JPA)
     public Rental() {
     }
 
-    // 🟢 Getters & Setters
+    // Getters & Setters
     public Long getId() {
         return id;
     }

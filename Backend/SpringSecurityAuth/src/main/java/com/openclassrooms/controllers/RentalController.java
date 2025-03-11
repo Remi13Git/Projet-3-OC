@@ -69,15 +69,15 @@ public class RentalController {
             @RequestParam("surface") BigDecimal surface,
             @RequestParam("price") BigDecimal price,
             @RequestParam("description") String description,
-            @RequestParam(value = "picture", required = false) MultipartFile picture,
+            @RequestParam(value = "picture") MultipartFile picture,
             @AuthenticationPrincipal Jwt jwt) {
 
         try {
-            // 🔹 Récupérer l'email depuis le JWT
+            // Récupérer l'email depuis le JWT
             String userEmail = jwt.getSubject();
             System.out.println("Email extrait du JWT : " + userEmail);
 
-            // 🔹 Rechercher l'utilisateur en base par email
+            // Rechercher l'utilisateur en base par email
             MyUser user = userRepository.findByEmail(userEmail);
             if (user == null) {
                 return ResponseEntity.status(403).body(null); // Utilisateur non trouvé
@@ -86,7 +86,7 @@ public class RentalController {
             Long ownerId = user.getId(); // Récupérer l'ID
             System.out.println("Owner ID récupéré depuis la base de données : " + ownerId);
 
-            // 🔹 Création de l'objet Rental
+            // Création de l'objet Rental
             Rental rental = new Rental();
             rental.setName(name);
             rental.setSurface(surface);
@@ -94,7 +94,7 @@ public class RentalController {
             rental.setDescription(description);
             rental.setOwnerId(ownerId);
 
-            // 🔹 Gestion de l'image (inchangé)
+            // Gestion de l'image
             if (picture != null && !picture.isEmpty()) {
                 String uploadDir = "uploads/";
                 File directory = new File(uploadDir);
@@ -110,7 +110,7 @@ public class RentalController {
                 rental.setPicture(absoluteUrl);
             }
 
-            // 🔹 Sauvegarde en base
+            // Sauvegarde en base
             Rental createdRental = rentalService.createRental(rental);
             return ResponseEntity.ok(createdRental);
 
@@ -128,11 +128,9 @@ public class RentalController {
             @RequestParam("surface") BigDecimal surface,
             @RequestParam("price") BigDecimal price,
             @RequestParam("description") String description,
-            @RequestParam(value = "picture", required = false) MultipartFile picture,
             @AuthenticationPrincipal Jwt jwt) {
 
         try {
-
 
             // Récupérer la location par son ID
             Optional<Rental> rentalOptional = rentalService.getRentalById(id);

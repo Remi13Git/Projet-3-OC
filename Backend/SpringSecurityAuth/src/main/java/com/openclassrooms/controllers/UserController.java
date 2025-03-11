@@ -9,7 +9,7 @@ import com.openclassrooms.models.MyUser;
 import com.openclassrooms.services.UserService;
 
 @RestController
-@RequestMapping("/api") // Corriger ici
+@RequestMapping("/api")
 public class UserController {
 
     private final UserService userService;
