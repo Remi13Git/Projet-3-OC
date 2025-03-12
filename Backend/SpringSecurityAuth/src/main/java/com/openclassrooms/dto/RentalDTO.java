@@ -3,16 +3,24 @@ package com.openclassrooms.dto;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class RentalDTO {
 
     private Long id;
     private String name;
     private BigDecimal surface;
     private BigDecimal price;
-    private String description;
     private String picture;
+    private String description;
+
+    @JsonProperty("owner_id")
     private Long ownerId;
+
+    @JsonProperty("created_at")
     private LocalDateTime createdAt;
+
+    @JsonProperty("updated_at")
     private LocalDateTime updatedAt;
 
     // Constructeur avec tous les paramètres
@@ -29,7 +37,7 @@ public class RentalDTO {
         this.updatedAt = updatedAt;
     }
 
-    // Getters et setters pour tous les champs
+    // Getters et setters
     public Long getId() {
         return id;
     }
@@ -62,20 +70,20 @@ public class RentalDTO {
         this.price = price;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public String getPicture() {
         return picture;
     }
 
     public void setPicture(String picture) {
         this.picture = picture;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Long getOwnerId() {

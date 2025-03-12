@@ -8,6 +8,8 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.openclassrooms.dto.ApiResponse;
+import com.openclassrooms.dto.RentalDTO;
 import com.openclassrooms.dto.RentalsResponse;
 import com.openclassrooms.models.MyUser;
 import com.openclassrooms.models.Rental;
@@ -39,6 +43,21 @@ public class RentalController {
         this.userRepository = userRepository;
     }
 
+    // Méthode pour convertir Rental en RentalDTO
+    private RentalDTO convertToDTO(Rental rental) {
+        return new RentalDTO(
+            rental.getId(),
+            rental.getName(),
+            rental.getSurface(),
+            rental.getPrice(),
+            rental.getDescription(),
+            rental.getPicture(),
+            rental.getOwnerId(),
+            rental.getCreatedAt(),
+            rental.getUpdatedAt()
+        );
+    }
+
     // Route GET /rentals
     @GetMapping
     public ResponseEntity<RentalsResponse> getAllRentals() {
@@ -48,23 +67,28 @@ public class RentalController {
             return ResponseEntity.noContent().build(); // Si aucune location n'est trouvée
         }
 
-        // Retourner la réponse en utilisant le DTO
-        RentalsResponse rentalsResponse = new RentalsResponse(rentals);
-        return ResponseEntity.ok(rentalsResponse); // Retourner le DTO
+        // Convertir les entités Rental en RentalDTO
+        List<RentalDTO> rentalDTOs = rentals.stream()
+                .map(this::convertToDTO) 
+                .collect(Collectors.toList());
+
+        // Retourner la réponse avec le DTO
+        RentalsResponse rentalsResponse = new RentalsResponse(rentalDTOs); 
+        return ResponseEntity.ok(rentalsResponse);
     }
 
 
     // Route GET /rentals/:id
     @GetMapping("/{id}")
-    public ResponseEntity<Rental> getRentalById(@PathVariable Long id) {
+    public ResponseEntity<RentalDTO> getRentalById(@PathVariable Long id) {
         return rentalService.getRentalById(id)
-                .map(ResponseEntity::ok)
+                .map(rental -> ResponseEntity.ok(convertToDTO(rental)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     // Route POST /rentals (Création d'une location avec gestion d'image)
     @PostMapping(consumes = "multipart/form-data")
-    public ResponseEntity<Rental> createRental(
+    public ResponseEntity<Object> createRental(
             @RequestParam("name") String name,
             @RequestParam("surface") BigDecimal surface,
             @RequestParam("price") BigDecimal price,
@@ -77,10 +101,10 @@ public class RentalController {
             String userEmail = jwt.getSubject();
             System.out.println("Email extrait du JWT : " + userEmail);
 
-            // Rechercher l'utilisateur en base par email
+            // Rechercher l'utilisateur en base via email
             MyUser user = userRepository.findByEmail(userEmail);
             if (user == null) {
-                return ResponseEntity.status(403).body(null); // Utilisateur non trouvé
+                return ResponseEntity.status(403).body(new ApiResponse.ErrorResponse("Utilisateur non trouvé"));
             }
 
             Long ownerId = user.getId(); // Récupérer l'ID
@@ -102,27 +126,30 @@ public class RentalController {
                     directory.mkdir();
                 }
 
-                String fileName = picture.getOriginalFilename();
-                Path filePath = Path.of(uploadDir, fileName);
+                // Générer un nom unique pour l'image avec UUID
+                String uuidFileName = UUID.randomUUID().toString() + "-" + picture.getOriginalFilename();
+                Path filePath = Path.of(uploadDir, uuidFileName);
                 Files.copy(picture.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-                String absoluteUrl = "http://localhost:3001/uploads/" + fileName;
+                // Stocker l'URL complète de l'image
+                String absoluteUrl = "http://localhost:3001/uploads/" + uuidFileName;
                 rental.setPicture(absoluteUrl);
             }
 
-            // Sauvegarde en base
-            Rental createdRental = rentalService.createRental(rental);
-            return ResponseEntity.ok(createdRental);
+            // Sauvegarde en DB
+            rentalService.createRental(rental);
 
-        } catch (IOException | IllegalArgumentException  e) {
-        return ResponseEntity.status(500).body(null);
-    }
-    }
+            // Retourner un message de succès après la création
+            return ResponseEntity.ok(new ApiResponse.SuccessResponse("Rental created !"));
 
+        } catch (IOException | IllegalArgumentException e) {
+            return ResponseEntity.status(500).body(new ApiResponse.ErrorResponse("Erreur interne lors de la création de la location"));
+        }
+    }
 
     // Route PUT /rentals/:id (Mise à jour d'une location)
     @PutMapping("/{id}")
-    public ResponseEntity<Rental> updateRental(
+    public ResponseEntity<Object> updateRental(
             @PathVariable Long id,
             @RequestParam("name") String name,
             @RequestParam("surface") BigDecimal surface,
@@ -131,17 +158,15 @@ public class RentalController {
             @AuthenticationPrincipal Jwt jwt) {
 
         try {
-
             // Récupérer la location par son ID
             Optional<Rental> rentalOptional = rentalService.getRentalById(id);
 
             // Vérifier si la location existe
             if (!rentalOptional.isPresent()) {
-                return ResponseEntity.notFound().build(); // Si la location n'existe pas
+                return ResponseEntity.status(404).body(new ApiResponse.ErrorResponse("Location not found"));
             }
 
             Rental existingRental = rentalOptional.get();  // Extraire l'objet Rental de l'Optional
-
 
             // Mise à jour des propriétés de la location
             existingRental.setName(name);
@@ -152,14 +177,15 @@ public class RentalController {
             // Mise à jour de la location en base de données
             Optional<Rental> updatedRentalOptional = rentalService.updateRental(id, existingRental);
 
-            // Si la mise à jour est réussie, retourner la location mise à jour
+            // Si la mise à jour est réussie, retourner un message de succès
             if (updatedRentalOptional.isPresent()) {
-                return ResponseEntity.ok(updatedRentalOptional.get());
+                return ResponseEntity.ok(new ApiResponse.SuccessResponse("Rental updated !"));
             } else {
-                return ResponseEntity.status(500).build();  // Erreur interne si l'update échoue
+                return ResponseEntity.status(500).body(new ApiResponse.ErrorResponse("Erreur interne lors de la mise à jour de la location"));
             }
+
         } catch (Exception e) {
-            return ResponseEntity.status(500).build();
+            return ResponseEntity.status(500).body(new ApiResponse.ErrorResponse("Erreur interne"));
         }
     }
 

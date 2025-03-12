@@ -21,19 +21,19 @@ public class MyUser {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String email; // Correspond à "email" en BDD
+    private String email;
 
     @Column(nullable = false)
-    private String name; // Correspond à "name" en BDD
+    private String name;
 
     @Column(nullable = false)
-    private String password; // Correspond à "password" en BDD
+    private String password;
 
     @Column(name = "created_at")
-    private LocalDateTime createdAt; // Correspond à "created_at" en BDD
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt; // Correspond à "updated_at" en BDD
+    private LocalDateTime updatedAt;
 
     // Getters et setters
     public Long getId() {

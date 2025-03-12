@@ -22,7 +22,7 @@ import com.openclassrooms.services.CustomUserDetailsService;
 public class SpringSecurityConfig {
 
     private final CustomUserDetailsService customUserDetailsService;
-    private final String jwtKey = "l3Gd2blWcftWyYWyCX5jxtJp8VCXOuxJ"; // Votre clé secrète
+    private final String jwtKey = "l3Gd2blWcftWyYWyCX5jxtJp8VCXOuxJ";
 
     public SpringSecurityConfig(CustomUserDetailsService customUserDetailsService) {
         this.customUserDetailsService = customUserDetailsService;

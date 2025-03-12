@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.openclassrooms.dto.AuthResponse;
+import com.openclassrooms.dto.LoginRequest;
+import com.openclassrooms.dto.RegisterRequest;
 import com.openclassrooms.models.MyUser;
 import com.openclassrooms.services.JWTService;
 import com.openclassrooms.services.UserService;
@@ -34,7 +37,7 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public LoginResponse getToken(@RequestBody LoginRequest loginRequest) {
+    public AuthResponse getToken(@RequestBody LoginRequest loginRequest) {
         // Essayer d'authentifier l'utilisateur
         try {
             // Créer un objet d'authentification basé sur les informations de la requête de login
@@ -50,7 +53,7 @@ public class LoginController {
             String token = jwtService.generateToken(authentication);
 
             // Retourner un objet avec le token
-            return new LoginResponse(token);
+            return new AuthResponse(token);
         } catch (BadCredentialsException e) {
             // Si l'authentification échoue, on lance une exception
             throw new RuntimeException("Identifiants incorrects");
@@ -59,7 +62,7 @@ public class LoginController {
 
     // Route pour l'inscription /api/auth/register
     @PostMapping("/register")
-    public RegisterResponse registerUser(@RequestBody RegisterRequest registerRequest) {
+    public AuthResponse registerUser(@RequestBody RegisterRequest registerRequest) {
         // Vérifier si l'utilisateur existe déjà
         if (userService.findByEmail(registerRequest.getEmail()) != null) {
             throw new RuntimeException("Cet utilisateur existe déjà !");
@@ -82,7 +85,7 @@ public class LoginController {
         );
         String token = jwtService.generateToken(authentication);
 
-        return new RegisterResponse(token);
+        return new AuthResponse(token);
     }
 
     // Route pour récupérer les infos de l'utilisateur connecté /api/auth/me
@@ -93,9 +96,9 @@ public class LoginController {
         }
 
         // Vérification des claims du JWT
-        String email = jwt.getSubject(); // "sub" contient souvent l'email
+        String email = jwt.getSubject();
 
-        // Vous pouvez maintenant récupérer l'utilisateur par son email
+        // Récupérer l'utilisateur par son email
         MyUser user = userService.findByEmail(email);
 
         if (user == null) {
@@ -110,39 +113,5 @@ public class LoginController {
             "created_at", user.getCreatedAt().toString(),
             "updated_at", user.getUpdatedAt().toString()
         );
-    }
-
-    // Classe pour structurer la réponse contenant le token
-    public static class LoginResponse {
-        private String token;
-
-        public LoginResponse(String token) {
-            this.token = token;
-        }
-
-        public String getToken() {
-            return token;
-        }
-
-        public void setToken(String token) {
-            this.token = token;
-        }
-    }
-
-    // Classe pour structurer la réponse de l'inscription avec le token
-    public static class RegisterResponse {
-        private String token;
-
-        public RegisterResponse(String token) {
-            this.token = token;
-        }
-
-        public String getToken() {
-            return token;
-        }
-
-        public void setToken(String token) {
-            this.token = token;
-        }
     }
 }

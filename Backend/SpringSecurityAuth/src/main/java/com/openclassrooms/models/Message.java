@@ -18,10 +18,10 @@ public class Message {
     private Long id;
 
     @Column(name = "rental_id")
-    private Integer rentalId;
+    private Long rentalId;
 
     @Column(name = "user_id")
-    private Integer userId;
+    private Long userId;
 
     @Column(name = "message")
     private String message;
@@ -41,19 +41,19 @@ public class Message {
         this.id = id;
     }
 
-    public Integer getRentalId() {
+    public Long getRentalId() {
         return rentalId;
     }
 
-    public void setRentalId(Integer rentalId) {
+    public void setRentalId(Long rentalId) {
         this.rentalId = rentalId;
     }
 
-    public Integer getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 

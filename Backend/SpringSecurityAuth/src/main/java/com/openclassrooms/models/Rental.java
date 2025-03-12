@@ -47,7 +47,7 @@ public class Rental {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    // Constructeur par défaut (nécessaire pour JPA)
+    // Constructeur
     public Rental() {
     }
 
