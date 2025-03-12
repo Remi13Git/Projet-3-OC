@@ -69,3 +69,11 @@ Cela va démarrer votre application Spring Boot, et le backend sera accessible �
 ```bash
 http://localhost:3001
 ```
+
+## Documentation de l'API
+
+Une fois l'application démarrée, vous pouvez accéder à la documentation de l'API à l'adresse suivante :
+
+👉 [Swagger UI - Documentation de l'API](http://localhost:3001/swagger-ui.html)
+
+Cela vous permet de tester les différentes routes de l'API directement depuis votre navigateur.

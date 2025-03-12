@@ -22,6 +22,12 @@ import com.openclassrooms.models.MyUser;
 import com.openclassrooms.services.JWTService;
 import com.openclassrooms.services.UserService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 @RestController
 @RequestMapping("/api/auth")
 public class LoginController {
@@ -36,6 +42,11 @@ public class LoginController {
         this.authenticationManager = authenticationManager;
     }
 
+    @Operation(summary = "Login user and get token", description = "Authenticate a user and generate a JWT token.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Token generated successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid credentials")
+    })
     @PostMapping("/login")
     public AuthResponse getToken(@RequestBody LoginRequest loginRequest) {
         // Essayer d'authentifier l'utilisateur
@@ -60,7 +71,11 @@ public class LoginController {
         }
     }
 
-    // Route pour l'inscription /api/auth/register
+    @Operation(summary = "Register user and get token", description = "Creates a new user account and returns a JWT token.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "User created successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid credentials")
+    })
     @PostMapping("/register")
     public AuthResponse registerUser(@RequestBody RegisterRequest registerRequest) {
         // Vérifier si l'utilisateur existe déjà
@@ -88,7 +103,14 @@ public class LoginController {
         return new AuthResponse(token);
     }
 
-    // Route pour récupérer les infos de l'utilisateur connecté /api/auth/me
+    @Operation(
+        summary = "Get authenticated user details",
+        description = "Retrieves information of the currently authenticated user."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "User details retrieved successfully", content = @Content(schema = @Schema(implementation = Map.class))),
+        @ApiResponse(responseCode = "401", description = "User not authenticated", content = @Content)
+    })
     @GetMapping("/me")
     public Map<String, Object> getAuthenticatedUser(@AuthenticationPrincipal Jwt jwt) {
         if (jwt == null) {

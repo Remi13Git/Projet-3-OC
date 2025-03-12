@@ -9,6 +9,12 @@ import com.openclassrooms.dto.UserDTO;
 import com.openclassrooms.models.MyUser;
 import com.openclassrooms.services.UserService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 @RestController
 @RequestMapping("/api")
 public class UserController {
@@ -19,7 +25,15 @@ public class UserController {
         this.userService = userService;
     }
 
-    // Route pour récupérer les informations de l'utilisateur par ID
+    @Operation(
+        summary = "Get user by ID",
+        description = "Retrieves user details based on the given user ID."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "User found", 
+            content = @Content(schema = @Schema(implementation = UserDTO.class))),
+        @ApiResponse(responseCode = "404", description = "User not found", content = @Content)
+    })
     @GetMapping("/user/{id}")
     public UserDTO getUserById(@PathVariable Long id) {
         // Récupérer l'utilisateur par son ID
