@@ -17,6 +17,8 @@ import com.openclassrooms.models.MyUser;
 import com.openclassrooms.repositories.UserRepository;
 import com.openclassrooms.services.MessageService;
 
+import io.swagger.v3.oas.annotations.Operation;
+
 @RestController
 @RequestMapping("/api/messages")
 public class MessageController {
@@ -29,6 +31,10 @@ public class MessageController {
         this.userRepository = userRepository;
     }
 
+    @Operation(
+        summary = "Create a new message",
+        description = "Authenticated users can send messages related to a rental."
+    )
     @PostMapping
     public ResponseEntity<Object> createMessage(
             @RequestBody MessageRequest messageRequest,

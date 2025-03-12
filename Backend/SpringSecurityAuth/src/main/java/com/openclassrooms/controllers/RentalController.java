@@ -31,8 +31,12 @@ import com.openclassrooms.models.Rental;
 import com.openclassrooms.repositories.UserRepository;
 import com.openclassrooms.services.RentalService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 @RestController
 @RequestMapping("/api/rentals")
+@SecurityRequirement(name = "BearerAuth")
 public class RentalController {
 
     private final RentalService rentalService;
@@ -59,6 +63,7 @@ public class RentalController {
     }
 
     // Route GET /rentals
+    @Operation(summary = "Get all rentals", description = "Retrieve a list of all rentals")
     @GetMapping
     public ResponseEntity<RentalsResponse> getAllRentals() {
         List<Rental> rentals = rentalService.getAllRentals();  // Récupérer les locations
@@ -79,6 +84,7 @@ public class RentalController {
 
 
     // Route GET /rentals/:id
+    @Operation(summary = "Get a rental by ID", description = "Retrieve details of a rental by its ID")
     @GetMapping("/{id}")
     public ResponseEntity<RentalDTO> getRentalById(@PathVariable Long id) {
         return rentalService.getRentalById(id)
@@ -87,6 +93,7 @@ public class RentalController {
     }
 
     // Route POST /rentals (Création d'une location avec gestion d'image)
+    @Operation(summary = "Create a new rental", description = "Create a new rental with an image upload")
     @PostMapping(consumes = "multipart/form-data")
     public ResponseEntity<Object> createRental(
             @RequestParam("name") String name,
@@ -148,6 +155,7 @@ public class RentalController {
     }
 
     // Route PUT /rentals/:id (Mise à jour d'une location)
+    @Operation(summary = "Update a rental", description = "Update rental details by ID")
     @PutMapping("/{id}")
     public ResponseEntity<Object> updateRental(
             @PathVariable Long id,

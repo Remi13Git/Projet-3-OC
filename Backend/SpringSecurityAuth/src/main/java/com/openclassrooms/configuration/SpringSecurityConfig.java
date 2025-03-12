@@ -35,6 +35,7 @@ public class SpringSecurityConfig {
                 .requestMatchers("/api/auth/login", "/api/auth/register").permitAll()  // Permet l'accès sans authentification
                 .requestMatchers("/api/auth/me").authenticated()  // Authentification requise pour /api/auth/me
                 .requestMatchers("/uploads/**").permitAll()  // Permet l'accès sans authentification
+                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()
                 .anyRequest().authenticated()  // Toutes les autres routes nécessitent une authentification
             )
             .oauth2ResourceServer(oauth2 -> 
