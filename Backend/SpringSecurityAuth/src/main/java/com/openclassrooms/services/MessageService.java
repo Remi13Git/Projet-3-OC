@@ -1,10 +1,11 @@
 package com.openclassrooms.services;
 
-import com.openclassrooms.models.Message;
-import com.openclassrooms.repositories.MessageRepository;
+import java.time.LocalDateTime;
+
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import com.openclassrooms.models.Message;
+import com.openclassrooms.repositories.MessageRepository;
 
 @Service
 public class MessageService {

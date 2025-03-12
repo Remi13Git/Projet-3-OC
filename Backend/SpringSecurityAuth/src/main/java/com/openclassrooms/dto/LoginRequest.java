@@ -1,4 +1,4 @@
-package com.openclassrooms.controllers;
+package com.openclassrooms.dto;
 
 public class LoginRequest {
     private String email; 
