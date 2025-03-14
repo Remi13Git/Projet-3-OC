@@ -33,7 +33,9 @@ Ce projet est une application de gestion de locations immobilières, permettant 
 - [Node.js et npm](https://nodejs.org/en/download/)
 - [Angular CLI](https://angular.io/cli)
 
-## Installation
+# Installation
+
+## Démarrer le backend (Spring Boot)
 
 1. Clonez le repository du projet.
 
@@ -45,7 +47,9 @@ Ce projet est une application de gestion de locations immobilières, permettant 
 
 3. Configurer le fichier `application.properties` pour la connexion à la base de données
 
-Dans le fichier `src/main/resources/application.properties`, vous devez configurer la connexion à votre base de données MySQL. 
+Pour créer votre base de données MySQL, utilisez le schema présent dans `Frontend/resources/sql/script.sql`
+
+Dans le fichier `src/main/resources/application.properties`, vous devez configurer la connexion à votre base de données MySQL en remplaçant l'url, l'username et le password par vos propres données. 
 
 ## Installer les dépendances
 
@@ -53,6 +57,7 @@ Dans le terminal de votre IDE ou dans un terminal, exécutez la commande suivant
 
 ```bash
 cd Projet-3-OC
+mvn clean install
 ```
 
 ## Lancer l'application
@@ -70,10 +75,25 @@ Cela va démarrer votre application Spring Boot, et le backend sera accessible �
 http://localhost:3001
 ```
 
+## Démarrer le frontend (Angular)
+
+Ouvrez une nouvelle fenêtre de terminal (ou un nouvel onglet dans votre IDE), puis exécutez les commandes suivantes :
+
+```bash
+cd Frontend
+npm install
+npm run start
+```
+Cela va installer les dépendances nécessaires puis démarrer votre application Angular. Le frontend sera accessible à l'adresse suivante :
+
+```bash
+http://localhost:4200
+```
+
 ## Documentation de l'API
 
 Une fois l'application démarrée, vous pouvez accéder à la documentation de l'API à l'adresse suivante :
 
-👉 [Swagger UI - Documentation de l'API](http://localhost:3001/swagger-ui.html)
+👉 [Swagger UI - Documentation de l'API](http://localhost:3001/swagger-ui/index.html)
 
 Cela vous permet de tester les différentes routes de l'API directement depuis votre navigateur.
